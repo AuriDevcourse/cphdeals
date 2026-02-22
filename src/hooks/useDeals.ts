@@ -21,7 +21,7 @@ export function useSearchDeals(query: string, maxPrice?: number) {
 export function useExpiring() {
   return useQuery({
     queryKey: ["expiring"],
-    queryFn: () => fetchExpiring(48),
+    queryFn: () => fetchExpiring(168),
   });
 }
 
