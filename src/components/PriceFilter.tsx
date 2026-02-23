@@ -1,21 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-
-const MIN = 20;
-const MAX = 1000;
-
-function useIsDark() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    const check = () => setDark(document.documentElement.classList.contains("dark"));
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => obs.disconnect();
-  }, []);
-  return dark;
-}
+const priceOptions: { value: number | undefined; label: string }[] = [
+  { value: undefined, label: "Any" },
+  { value: 100, label: "Under 100" },
+  { value: 250, label: "Under 250" },
+  { value: 500, label: "Under 500" },
+  { value: 1000, label: "Under 1000" },
+];
 
 interface Props {
   selected: number | undefined;
@@ -23,49 +14,24 @@ interface Props {
 }
 
 export function PriceFilter({ selected, onSelect }: Props) {
-  const [value, setValue] = useState(selected ?? MAX);
-  const debounce = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  // Sync external changes
-  useEffect(() => {
-    setValue(selected ?? MAX);
-  }, [selected]);
-
-  const handleChange = useCallback(
-    (v: number) => {
-      setValue(v);
-      clearTimeout(debounce.current);
-      debounce.current = setTimeout(() => {
-        onSelect(v >= MAX ? undefined : v);
-      }, 200);
-    },
-    [onSelect]
-  );
-
-  const pct = ((value - MIN) / (MAX - MIN)) * 100;
-  const isAll = value >= MAX;
-  const isDark = useIsDark();
-  const trackBg = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
-
   return (
-    <div className="flex items-center gap-3">
-      <input
-        type="range"
-        min={MIN}
-        max={MAX}
-        step={10}
-        value={value}
-        onChange={(e) => handleChange(Number(e.target.value))}
-        className="price-slider h-1.5 w-28 cursor-pointer appearance-none rounded-full sm:w-36"
-        style={{
-          background: isAll
-            ? trackBg
-            : `linear-gradient(to right, rgb(16 185 129) 0%, rgb(16 185 129) ${pct}%, ${trackBg} ${pct}%, ${trackBg} 100%)`,
-        }}
-      />
-      <span className="min-w-[70px] text-xs font-medium tabular-nums text-zinc-600 dark:text-zinc-300">
-        {isAll ? "Any price" : `Under ${value} kr.`}
-      </span>
+    <div className="flex flex-wrap gap-2">
+      {priceOptions.map((opt) => {
+        const active = selected === opt.value;
+        return (
+          <button
+            key={opt.label}
+            onClick={() => onSelect(opt.value)}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              active
+                ? "bg-emerald-500/80 text-white shadow-lg shadow-emerald-500/10 backdrop-blur-md"
+                : "border border-zinc-200 bg-zinc-100 text-zinc-600 backdrop-blur-md hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
+            }`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

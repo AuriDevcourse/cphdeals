@@ -207,28 +207,6 @@
   }
 }
 
-/* Price range slider */
-.price-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgb(16 185 129);
-  border: 2px solid #fff;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-}
-
-.price-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgb(16 185 129);
-  border: 2px solid #fff;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
-}
 
 /* ===== Leaflet map theme ===== */
 
