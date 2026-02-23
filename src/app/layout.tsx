@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { QueryProvider } from "@/providers/QueryProvider";
 
 import "./globals.css";
@@ -60,6 +61,7 @@ export default function RootLayout({
         className={`${geistSans.variable} font-sans antialiased bg-zinc-50 dark:bg-zinc-950`}
       >
         <QueryProvider>{children}</QueryProvider>
+        <Analytics />
       </body>
     </html>
   );
