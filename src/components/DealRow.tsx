@@ -48,6 +48,14 @@ export function DealRow({ deal }: { deal: Deal }) {
             -{deal.discount_pct}%
           </div>
         )}
+        {/* Sold-out overlay */}
+        {!!deal.sold_out && (
+          <div className="absolute inset-0 z-[3] flex items-center justify-center bg-black/60">
+            <span className="rounded-md border border-white/30 bg-black/70 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white sm:px-3 sm:py-1 sm:text-xs">
+              Sold out
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Content — stacked on mobile, row on desktop */}
