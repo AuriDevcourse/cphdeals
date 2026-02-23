@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2 } from "lucide-react";
 import { DealMapWrapper } from "@/components/map/DealMapWrapper";
-import { useDeals, useSearchDeals, useExpiring } from "@/hooks/useDeals";
+import { useDeals, useSearchDeals } from "@/hooks/useDeals";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { COPENHAGEN_COORDS, haversineKm } from "@/lib/geocode";
 import { DealCard } from "@/components/DealCard";
@@ -62,7 +62,7 @@ function useIsMobile() {
 }
 
 export default function Home() {
-  const [category, setCategory] = useState<string | undefined>(undefined);
+  const [categories, setCategories] = useState<Set<string>>(new Set());
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState("");
   const [showExpiring, setShowExpiring] = useState(false);
@@ -76,18 +76,21 @@ export default function Home() {
   const isMobile = useIsMobile();
   const geo = useGeolocation();
 
-  const dealsQuery = useDeals(category, maxPrice);
+  const dealsQuery = useDeals(undefined, maxPrice);
   const searchResults = useSearchDeals(searchQuery, maxPrice);
-  const expiringQuery = useExpiring();
 
   const handleSearch = useCallback((q: string) => {
     setSearchQuery(q);
     setVisibleCount(PAGE_SIZE);
   }, []);
 
-  const handleCategorySelect = (cat: string | undefined) => {
-    setShowExpiring(false);
-    setCategory(cat);
+  const handleCategoryToggle = (cat: string) => {
+    setCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(cat)) next.delete(cat);
+      else next.add(cat);
+      return next;
+    });
     setVisibleCount(PAGE_SIZE);
   };
 
@@ -126,14 +129,26 @@ export default function Home() {
     deals = searchResults.data?.deals ?? [];
     isLoading = searchResults.isLoading;
     isError = searchResults.isError;
-  } else if (showExpiring) {
-    deals = expiringQuery.data?.deals ?? [];
-    isLoading = expiringQuery.isLoading;
-    isError = expiringQuery.isError;
   } else {
     deals = dealsQuery.data?.deals ?? [];
     isLoading = dealsQuery.isLoading;
     isError = dealsQuery.isError;
+  }
+
+  // Filter by selected categories (client-side)
+  if (categories.size > 0) {
+    deals = deals.filter((d) => categories.has(d.category));
+  }
+
+  // Filter by expiring (deals with expiry within 7 days)
+  if (showExpiring) {
+    const now = Date.now();
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    deals = deals.filter((d) => {
+      if (!d.expiry) return false;
+      const exp = new Date(d.expiry).getTime();
+      return exp > now && exp - now <= weekMs;
+    });
   }
 
   // Apply time filter (based on when the deal was first added)
@@ -150,15 +165,14 @@ export default function Home() {
     deals = deals.filter((d) => !d.sold_out);
   }
 
-  // Apply sorting — expiring view always sorts soonest-first
+  // Apply sorting — when expiring is active, sort by soonest-first as secondary
+  deals = sortDeals(deals, sort);
   if (showExpiring) {
     deals = [...deals].sort((a, b) => {
       const ea = a.expiry ? new Date(a.expiry).getTime() : Infinity;
       const eb = b.expiry ? new Date(b.expiry).getTime() : Infinity;
       return ea - eb;
     });
-  } else {
-    deals = sortDeals(deals, sort);
   }
 
   // Compute distances when user location is available
@@ -212,9 +226,7 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-full sm:w-64">
-              <SearchBar onSearch={handleSearch} />
-            </div>
+            <SearchBar onSearch={handleSearch} />
             <ThemeToggle />
           </div>
         </div>
@@ -227,9 +239,9 @@ export default function Home() {
       <div className="mb-6">
         {/* Category row — always visible */}
         <CategoryFilter
-          selected={category}
+          selected={categories}
           expiring={showExpiring}
-          onSelect={handleCategorySelect}
+          onToggle={handleCategoryToggle}
           onExpiringToggle={handleExpiringToggle}
         />
 
@@ -247,18 +259,16 @@ export default function Home() {
 
         {/* Filter content — always visible on sm+, toggled on mobile */}
         <div className={`mt-3 space-y-3 ${filtersOpen ? "block" : "hidden"} sm:block`}>
-          {!showExpiring && (
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-zinc-500">Price</span>
-                <PriceFilter selected={maxPrice} onSelect={handlePriceChange} />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-zinc-500">Added</span>
-                <TimeFilter selected={maxAge} onSelect={handleTimeChange} />
-              </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500">Price</span>
+              <PriceFilter selected={maxPrice} onSelect={handlePriceChange} />
             </div>
-          )}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500">Added</span>
+              <TimeFilter selected={maxAge} onSelect={handleTimeChange} />
+            </div>
+          </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-zinc-500">Sort</span>
