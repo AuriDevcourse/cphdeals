@@ -16,6 +16,7 @@ import { StatsBar } from "@/components/StatsBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TelegramBanner } from "@/components/TelegramBanner";
 import { BackToTop } from "@/components/BackToTop";
+import { PullToRefresh } from "@/components/PullToRefresh";
 import type { Deal } from "@/lib/types";
 
 const PAGE_SIZE = 30;
@@ -146,6 +147,7 @@ export default function Home() {
 
 
   return (
+    <PullToRefresh>
     <main className="relative z-10 mx-auto max-w-[1400px] px-4 py-6">
       {/* Header */}
       <div className="mb-6">
@@ -295,5 +297,6 @@ export default function Home() {
       {/* Back to top */}
       <BackToTop />
     </main>
+    </PullToRefresh>
   );
 }
