@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { LayoutGrid, List, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
+import { LayoutGrid, List, Map, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
+import { DealMapWrapper } from "@/components/map/DealMapWrapper";
 import { useDeals, useSearchDeals, useExpiring } from "@/hooks/useDeals";
 import { DealCard } from "@/components/DealCard";
 import { DealRow } from "@/components/DealRow";
@@ -64,7 +65,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showExpiring, setShowExpiring] = useState(false);
   const [maxAge, setMaxAge] = useState<number | undefined>(undefined);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [hideSoldOut, setHideSoldOut] = useState(false);
@@ -147,8 +148,8 @@ export default function Home() {
   const visibleDeals = deals.slice(0, visibleCount);
   const hasMore = visibleCount < totalDeals;
 
-  // On mobile, always use list view
-  const effectiveView = isMobile ? "list" : viewMode;
+  // On mobile, use list view unless map is selected
+  const effectiveView = isMobile && viewMode !== "map" ? "list" : viewMode;
 
 
 
@@ -258,25 +259,33 @@ export default function Home() {
                 <span className="text-zinc-600"> · showing {visibleCount}</span>
               )}
             </p>
-            {/* Hide toggle on mobile — always list */}
-            <div className="hidden items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] p-1 sm:flex">
+            <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] p-1">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`rounded-md p-1.5 transition-colors ${viewMode === "grid" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "grid" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
                 title="Grid view"
               >
                 <LayoutGrid className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`rounded-md p-1.5 transition-colors ${viewMode === "list" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "list" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
                 title="List view"
               >
                 <List className="h-4 w-4" />
               </button>
+              <button
+                onClick={() => setViewMode("map")}
+                className={`rounded-md p-1.5 transition-colors ${viewMode === "map" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                title="Map view"
+              >
+                <Map className="h-4 w-4" />
+              </button>
             </div>
           </div>
-          {effectiveView === "grid" ? (
+          {effectiveView === "map" ? (
+            <DealMapWrapper deals={deals} />
+          ) : effectiveView === "grid" ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {visibleDeals.map((deal) => (
                 <DealCard key={deal.deal_id} deal={deal} />
@@ -290,8 +299,8 @@ export default function Home() {
             </div>
           )}
 
-          {/* Show more — overflowAnchor:none prevents browser from anchoring to this element and jumping */}
-          {hasMore && (
+          {/* Show more — hidden in map view */}
+          {effectiveView !== "map" && hasMore && (
             <div className="mt-6 flex justify-center" style={{ overflowAnchor: "none" }}>
               <button
                 onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}

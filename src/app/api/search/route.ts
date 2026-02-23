@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { filterJunkDeals } from "@/lib/dealFilter";
 
 const API_URL = process.env.HETZNER_API_URL || "http://46.225.135.183:8080";
 
@@ -9,5 +10,6 @@ export async function GET(req: NextRequest) {
 
   const res = await fetch(url.toString(), { next: { revalidate: 60 } });
   const data = await res.json();
-  return NextResponse.json(data);
+  const filtered = filterJunkDeals(data.deals ?? []);
+  return NextResponse.json({ ...data, deals: filtered, count: filtered.length });
 }
