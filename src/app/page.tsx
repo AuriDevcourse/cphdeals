@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { LayoutGrid, List, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { LayoutGrid, List, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
 import { useDeals, useSearchDeals, useExpiring } from "@/hooks/useDeals";
 import { DealCard } from "@/components/DealCard";
 import { DealRow } from "@/components/DealRow";
@@ -67,6 +67,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [hideSoldOut, setHideSoldOut] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -131,6 +132,11 @@ export default function Home() {
       const added = d.created_at ?? d.updated_at;
       return new Date(added).getTime() >= cutoff;
     });
+  }
+
+  // Hide sold-out deals
+  if (hideSoldOut) {
+    deals = deals.filter((d) => !d.sold_out);
   }
 
   // Apply sorting
@@ -206,9 +212,22 @@ export default function Home() {
               </div>
             </div>
           )}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-zinc-500">Sort</span>
-            <SortFilter selected={sort} onSelect={handleSortChange} />
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500">Sort</span>
+              <SortFilter selected={sort} onSelect={handleSortChange} />
+            </div>
+            <button
+              onClick={() => { setHideSoldOut((v) => !v); setVisibleCount(PAGE_SIZE); }}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                hideSoldOut
+                  ? "border-red-500/30 bg-red-500/10 text-red-400"
+                  : "border-white/[0.08] bg-white/[0.04] text-zinc-400 hover:text-zinc-200"
+              }`}
+            >
+              <EyeOff className="h-3 w-3" />
+              Hide Sold Out
+            </button>
           </div>
         </div>
       </div>
