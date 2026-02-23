@@ -65,20 +65,10 @@ export function getExpiryInfo(expiry: string | null) {
 
 async function saveAsImage(el: HTMLElement, title: string) {
   try {
-    // Clone card into an off-screen container so it's never visible
-    const wrapper = document.createElement("div");
-    wrapper.style.cssText =
-      "position:fixed;left:-9999px;top:0;display:inline-block;padding:32px;background:#09090b;border-radius:0";
-    const clone = el.cloneNode(true) as HTMLElement;
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
-
-    const dataUrl = await toPng(wrapper, {
+    const dataUrl = await toPng(el, {
       pixelRatio: 2,
       backgroundColor: "#09090b",
     });
-
-    wrapper.remove();
 
     const link = document.createElement("a");
     link.download = `deal-${title.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-")}.png`;
