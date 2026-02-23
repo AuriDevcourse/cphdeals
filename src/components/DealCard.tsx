@@ -68,6 +68,16 @@ async function saveAsImage(el: HTMLElement, title: string) {
     const dataUrl = await toPng(el, {
       pixelRatio: 2,
       backgroundColor: "#09090b",
+      // Fetch cross-origin images through a data URL to avoid CORS errors
+      fetchRequestInit: { mode: "cors" },
+      skipFonts: true,
+      filter: (node: HTMLElement) => {
+        // Skip the holographic overlay (not needed in export)
+        if (node.classList?.contains("holo-shimmer")) return false;
+        return true;
+      },
+      imagePlaceholder:
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='256'%3E%3Crect fill='%2327272a' width='400' height='256'/%3E%3C/svg%3E",
     });
 
     const link = document.createElement("a");
