@@ -29,7 +29,7 @@ export function SearchBar({ onSearch }: Props) {
         placeholder="Search deals..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="h-9 w-full rounded-lg border border-white/[0.08] bg-white/[0.04] pl-9 pr-8 text-sm text-zinc-200 outline-none backdrop-blur-xl transition-all placeholder:text-zinc-500 focus:border-white/[0.15] focus:bg-white/[0.07] focus:ring-1 focus:ring-white/10"
+        className="h-9 w-full rounded-lg border border-zinc-200 bg-zinc-100 pl-9 pr-8 text-sm text-zinc-800 outline-none backdrop-blur-xl transition-all placeholder:text-zinc-400 focus:border-zinc-300 focus:bg-zinc-50 focus:ring-1 focus:ring-zinc-200 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-200 dark:placeholder:text-zinc-500 dark:focus:border-white/[0.15] dark:focus:bg-white/[0.07] dark:focus:ring-white/10"
       />
       {value && (
         <button

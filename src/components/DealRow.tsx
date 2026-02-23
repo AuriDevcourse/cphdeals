@@ -18,7 +18,7 @@ export function DealRow({ deal }: { deal: Deal }) {
       href={deal.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex overflow-hidden rounded-xl border border-white/[0.08] bg-zinc-900/70 backdrop-blur-xl transition-colors hover:bg-zinc-800/70"
+      className="group relative flex overflow-hidden rounded-xl border border-zinc-200 bg-white backdrop-blur-xl transition-colors hover:bg-zinc-50 dark:border-white/[0.08] dark:bg-zinc-900/70 dark:hover:bg-zinc-800/70"
     >
       {/* Image */}
       <div className="relative w-24 shrink-0 self-stretch overflow-hidden sm:w-44">
@@ -30,10 +30,10 @@ export function DealRow({ deal }: { deal: Deal }) {
               loading="lazy"
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-zinc-900/90" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-white/90 dark:to-zinc-900/90" />
           </>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-zinc-800/80">
+          <div className="flex h-full w-full items-center justify-center bg-zinc-200 dark:bg-zinc-800/80">
             <span
               className="text-base italic tracking-wide sm:text-2xl"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: "#c9a84c" }}
@@ -64,7 +64,7 @@ export function DealRow({ deal }: { deal: Deal }) {
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 px-2.5 py-2 sm:hidden">
           {/* Row 1: Category + expiry + source */}
           <div className="flex items-center gap-1.5">
-            <span className={`inline-flex items-center gap-0.5 rounded-full border border-white/[0.08] px-1.5 py-0.5 text-[9px] font-semibold ${config.bg}`}>
+            <span className={`inline-flex items-center gap-0.5 rounded-full border border-zinc-200 px-1.5 dark:border-white/[0.08] py-0.5 text-[9px] font-semibold ${config.bg}`}>
               <Icon className="h-2.5 w-2.5" />
               {config.label}
             </span>
@@ -78,7 +78,7 @@ export function DealRow({ deal }: { deal: Deal }) {
           </div>
 
           {/* Row 2: Title + description */}
-          <h3 className="text-[13px] font-bold leading-tight text-zinc-100 line-clamp-1">
+          <h3 className="text-[13px] font-bold leading-tight text-zinc-900 line-clamp-1 dark:text-zinc-100">
             {deal.title}
           </h3>
           {deal.description && (
@@ -105,9 +105,9 @@ export function DealRow({ deal }: { deal: Deal }) {
           <div className="flex items-center gap-1.5">
             {deal.deal_price != null ? (
               <>
-                <span className="text-base font-black text-white">
+                <span className="text-base font-black text-zinc-900 dark:text-white">
                   {Math.round(deal.deal_price)}
-                  <span className="ml-0.5 text-[10px] font-semibold text-zinc-400">kr.</span>
+                  <span className="ml-0.5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">kr.</span>
                 </span>
                 {deal.original_price != null && (
                   <span className="text-[10px] text-zinc-500 line-through">
@@ -129,7 +129,7 @@ export function DealRow({ deal }: { deal: Deal }) {
         {/* Desktop layout: info column */}
         <div className="hidden min-w-0 flex-1 flex-col justify-center gap-2 px-5 py-4 sm:flex">
           <div className="flex items-center gap-2">
-            <span className={`inline-flex items-center gap-1 rounded-full border border-white/[0.08] px-2.5 py-0.5 text-[11px] font-semibold ${config.bg}`}>
+            <span className={`inline-flex items-center gap-1 rounded-full border border-zinc-200 px-2.5 dark:border-white/[0.08] py-0.5 text-[11px] font-semibold ${config.bg}`}>
               <Icon className="h-3 w-3" />
               {config.label}
             </span>
@@ -140,11 +140,11 @@ export function DealRow({ deal }: { deal: Deal }) {
               </span>
             )}
           </div>
-          <h3 className="text-base font-bold leading-snug text-zinc-100 line-clamp-1 group-hover:text-white">
+          <h3 className="text-base font-bold leading-snug text-zinc-900 line-clamp-1 group-hover:text-black dark:text-zinc-100 dark:group-hover:text-white">
             {deal.title}
           </h3>
           {deal.description && (
-            <p className="text-sm text-zinc-400 line-clamp-1">{deal.description}</p>
+            <p className="text-sm text-zinc-500 line-clamp-1 dark:text-zinc-400">{deal.description}</p>
           )}
           <div className="flex items-center gap-4 text-xs text-zinc-500">
             {deal.provider && (
@@ -167,9 +167,9 @@ export function DealRow({ deal }: { deal: Deal }) {
           <div className="text-right">
             {deal.deal_price != null ? (
               <>
-                <span className="text-2xl font-black text-white">
+                <span className="text-2xl font-black text-zinc-900 dark:text-white">
                   {Math.round(deal.deal_price)}
-                  <span className="ml-0.5 text-sm font-semibold text-zinc-400">kr.</span>
+                  <span className="ml-0.5 text-sm font-semibold text-zinc-500 dark:text-zinc-400">kr.</span>
                 </span>
                 {deal.original_price != null && (
                   <div className="text-xs text-zinc-500 line-through">
@@ -188,7 +188,7 @@ export function DealRow({ deal }: { deal: Deal }) {
           )}
           <div className="flex items-center gap-3 text-xs text-zinc-600">
             <span>via {deal.source}</span>
-            <span className="flex items-center gap-1 text-zinc-500 transition-colors group-hover:text-zinc-300">
+            <span className="flex items-center gap-1 text-zinc-400 transition-colors group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:text-zinc-300">
               View deal <ExternalLink className="h-3 w-3" />
             </span>
           </div>

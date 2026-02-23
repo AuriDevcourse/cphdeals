@@ -150,7 +150,7 @@ export function DealCard({ deal }: { deal: Deal }) {
       <a href={deal.url} target="_blank" rel="noopener noreferrer" className="block">
         <div
           ref={cardRef}
-          className="holo-card relative overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/70 shadow-lg backdrop-blur-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-zinc-900/50"
+          className="holo-card relative overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg backdrop-blur-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-zinc-300/50 dark:border-white/[0.08] dark:bg-zinc-900/70 dark:hover:shadow-zinc-900/50"
           style={{
             "--glow-inner": config.glowInner,
             "--glow-outer": config.glowOuter,
@@ -173,10 +173,10 @@ export function DealCard({ deal }: { deal: Deal }) {
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent dark:from-zinc-900 dark:via-zinc-900/40" />
               </>
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-zinc-800/80">
+              <div className="flex h-full w-full items-center justify-center bg-zinc-200 dark:bg-zinc-800/80">
                 <span
                   className="text-5xl italic tracking-wide"
                   style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: "#c9a84c" }}
@@ -207,7 +207,7 @@ export function DealCard({ deal }: { deal: Deal }) {
             {/* Category badge + expiry */}
             <div className="mb-4 flex items-center justify-between">
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] px-3 py-1 text-xs font-semibold backdrop-blur-sm ${config.bg}`}
+                className={`inline-flex items-center gap-1.5 rounded-full border border-zinc-200 px-3 py-1 text-xs font-semibold backdrop-blur-sm dark:border-white/[0.08] ${config.bg}`}
               >
                 <Icon className="h-3.5 w-3.5" />
                 {config.label}
@@ -227,7 +227,7 @@ export function DealCard({ deal }: { deal: Deal }) {
             </div>
 
             {/* Title */}
-            <h3 className="mb-4 text-lg font-bold leading-snug text-zinc-100 line-clamp-2 group-hover:text-white">
+            <h3 className="mb-4 text-lg font-bold leading-snug text-zinc-900 line-clamp-2 group-hover:text-black dark:text-zinc-100 dark:group-hover:text-white">
               {deal.title}
             </h3>
 
@@ -235,49 +235,49 @@ export function DealCard({ deal }: { deal: Deal }) {
             <div className="mb-4 space-y-2">
               {/* Provider / venue */}
               {deal.provider && (
-                <div className="flex items-center gap-2 text-sm text-zinc-300">
-                  <Store className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
+                  <Store className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                   <span className="truncate">{deal.provider}</span>
                 </div>
               )}
 
               {/* Location */}
               {deal.location && (
-                <div className="flex items-center gap-2 text-sm text-zinc-300">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-500" />
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
+                  <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                   <span className="truncate">{deal.location}</span>
                 </div>
               )}
 
               {/* What you get */}
               {deal.description && (
-                <div className="flex items-start gap-2 text-sm text-zinc-400">
-                  <Tag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500" />
+                <div className="flex items-start gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  <Tag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                   <span className="line-clamp-2">{deal.description}</span>
                 </div>
               )}
             </div>
 
             {/* Price block */}
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.04] p-4 backdrop-blur-sm">
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 backdrop-blur-sm dark:border-white/[0.06] dark:bg-white/[0.04]">
               <div className="flex items-end justify-between">
                 <div>
                   {deal.deal_price != null ? (
                     <div className="flex items-baseline gap-3">
-                      <span className="text-3xl font-black text-white">
+                      <span className="text-3xl font-black text-zinc-900 dark:text-white">
                         {Math.round(deal.deal_price)}
-                        <span className="ml-1 text-lg font-semibold text-zinc-400">
+                        <span className="ml-1 text-lg font-semibold text-zinc-500 dark:text-zinc-400">
                           kr.
                         </span>
                       </span>
                       {deal.original_price != null && (
-                        <span className="text-base text-zinc-500 line-through">
+                        <span className="text-base text-zinc-400 line-through dark:text-zinc-500">
                           {Math.round(deal.original_price)} kr.
                         </span>
                       )}
                     </div>
                   ) : (
-                    <span className="text-lg font-semibold text-zinc-400">
+                    <span className="text-lg font-semibold text-zinc-500 dark:text-zinc-400">
                       See price on site
                     </span>
                   )}
@@ -291,7 +291,7 @@ export function DealCard({ deal }: { deal: Deal }) {
             </div>
 
             {/* Source tag */}
-            <div className="mt-3 text-xs text-zinc-600">
+            <div className="mt-3 text-xs text-zinc-400 dark:text-zinc-600">
               via {deal.source}
             </div>
           </div>
@@ -301,13 +301,13 @@ export function DealCard({ deal }: { deal: Deal }) {
 
           {/* Footer — hidden from image export */}
           <div data-export-hide="true" className="relative z-[2] flex items-center justify-between px-5 py-2.5">
-            <span className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wider text-zinc-500 transition-colors group-hover:bg-zinc-800 group-hover:text-zinc-300">
+            <span className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wider text-zinc-400 transition-colors group-hover:bg-zinc-100 group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:bg-zinc-800 dark:group-hover:text-zinc-300">
               View deal
               <ExternalLink className="h-3.5 w-3.5" />
             </span>
             <button
               onClick={handleSave}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
               title="Save as image"
             >
               <Download className="h-3.5 w-3.5" />

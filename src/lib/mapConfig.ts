@@ -2,9 +2,11 @@
 export const MAP_CENTER: [number, number] = [55.6761, 12.5683];
 export const MAP_ZOOM = 12;
 
-// CartoDB Dark Matter — free, no API key
-export const TILE_URL =
+// CartoDB tiles — free, no API key
+export const TILE_URL_DARK =
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+export const TILE_URL_LIGHT =
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 export const TILE_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>';
 

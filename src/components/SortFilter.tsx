@@ -29,7 +29,7 @@ export function SortFilter({ selected, onSelect }: Props) {
               className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 active
                   ? "bg-violet-500/80 text-white shadow-lg shadow-violet-500/10 backdrop-blur-md"
-                  : "border border-white/[0.08] bg-white/[0.04] text-zinc-400 backdrop-blur-md hover:bg-white/[0.1] hover:text-zinc-200"
+                  : "border border-zinc-200 bg-zinc-100 text-zinc-600 backdrop-blur-md hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
               }`}
             >
               {opt.label}

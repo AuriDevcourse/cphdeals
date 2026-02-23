@@ -4,9 +4,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function DealSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/70">
+    <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-white/[0.08] dark:bg-zinc-900/70">
       {/* Accent bar */}
-      <div className="h-1.5 bg-zinc-800" />
+      <div className="h-1.5 bg-zinc-200 dark:bg-zinc-800" />
       {/* Image area */}
       <Skeleton className="h-64 w-full rounded-none" />
       {/* Content */}
@@ -20,7 +20,7 @@ export function DealSkeleton() {
           <Skeleton className="h-4 w-1/3" />
           <Skeleton className="h-4 w-1/2" />
         </div>
-        <div className="rounded-xl bg-zinc-800/60 p-4">
+        <div className="rounded-xl bg-zinc-100 p-4 dark:bg-zinc-800/60">
           <div className="flex items-center gap-3">
             <Skeleton className="h-8 w-24" />
             <Skeleton className="h-5 w-16" />
@@ -28,7 +28,7 @@ export function DealSkeleton() {
         </div>
       </div>
       {/* Perforated edge */}
-      <div className="h-[18px] bg-zinc-800/30" />
+      <div className="h-[18px] bg-zinc-100 dark:bg-zinc-800/30" />
       {/* Footer */}
       <div className="flex items-center justify-between px-5 py-2.5">
         <Skeleton className="h-4 w-20" />

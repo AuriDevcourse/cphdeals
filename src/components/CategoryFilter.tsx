@@ -42,7 +42,7 @@ export function CategoryFilter({
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
               active
                 ? "bg-white/90 text-zinc-900 shadow-lg shadow-white/5 dark:bg-white/90 dark:text-zinc-900"
-                : "border border-white/[0.08] bg-white/[0.04] text-zinc-400 backdrop-blur-md hover:bg-white/[0.1] hover:text-zinc-200"
+                : "border border-zinc-200 bg-zinc-100 text-zinc-600 backdrop-blur-md hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
             }`}
           >
             <Icon className="h-3.5 w-3.5" />
@@ -55,7 +55,7 @@ export function CategoryFilter({
         className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
           expiring
             ? "bg-amber-500/80 text-white shadow-lg shadow-amber-500/10 backdrop-blur-md"
-            : "border border-white/[0.08] bg-white/[0.04] text-zinc-400 backdrop-blur-md hover:bg-white/[0.1] hover:text-zinc-200"
+            : "border border-zinc-200 bg-zinc-100 text-zinc-600 backdrop-blur-md hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
         }`}
       >
         <Clock className="h-3.5 w-3.5" />

@@ -198,7 +198,7 @@ export default function Home() {
         {/* Mobile: toggle button */}
         <button
           onClick={() => setFiltersOpen((o) => !o)}
-          className="mt-3 flex w-full items-center justify-between rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-zinc-400 sm:hidden"
+          className="mt-3 flex w-full items-center justify-between rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-xs font-medium text-zinc-600 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 sm:hidden"
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -230,8 +230,8 @@ export default function Home() {
               onClick={() => { setHideSoldOut((v) => !v); setVisibleCount(PAGE_SIZE); }}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
                 hideSoldOut
-                  ? "border-red-500/30 bg-red-500/10 text-red-400"
-                  : "border-white/[0.08] bg-white/[0.04] text-zinc-400 hover:text-zinc-200"
+                  ? "border-red-500/30 bg-red-500/10 text-red-500 dark:text-red-400"
+                  : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
               <EyeOff className="h-3 w-3" />
@@ -255,36 +255,36 @@ export default function Home() {
           </p>
         </div>
       ) : deals.length === 0 ? (
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-12 text-center backdrop-blur-md">
+        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-12 text-center backdrop-blur-md dark:border-white/[0.06] dark:bg-white/[0.03]">
           <p className="text-zinc-500">No deals found. Try different filters.</p>
         </div>
       ) : (
         <>
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
               {totalDeals} deal{totalDeals !== 1 ? "s" : ""}
               {hasMore && (
                 <span className="text-zinc-600"> · showing {visibleCount}</span>
               )}
             </p>
-            <div className="flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] p-1">
+            <div className="flex items-center gap-1 rounded-lg border border-zinc-200 bg-zinc-100 p-1 dark:border-white/[0.08] dark:bg-white/[0.04]">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "grid" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "grid" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
                 title="Grid view"
               >
                 <LayoutGrid className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "list" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "list" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
                 title="List view"
               >
                 <List className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode("map")}
-                className={`rounded-md p-1.5 transition-colors ${viewMode === "map" ? "bg-white/[0.1] text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                className={`rounded-md p-1.5 transition-colors ${viewMode === "map" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
                 title="Map view"
               >
                 <Map className="h-4 w-4" />
@@ -312,7 +312,7 @@ export default function Home() {
             <div className="mt-6 flex justify-center" style={{ overflowAnchor: "none" }}>
               <button
                 onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-6 py-2.5 text-sm font-medium text-zinc-400 backdrop-blur-md transition-all hover:bg-white/[0.1] hover:text-zinc-200"
+                className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-100 px-6 py-2.5 text-sm font-medium text-zinc-600 backdrop-blur-md transition-all hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
               >
                 Show more
                 <ChevronDown className="h-4 w-4" />

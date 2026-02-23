@@ -5,6 +5,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const MIN = 20;
 const MAX = 1000;
 
+function useIsDark() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const check = () => setDark(document.documentElement.classList.contains("dark"));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return dark;
+}
+
 interface Props {
   selected: number | undefined;
   onSelect: (price: number | undefined) => void;
@@ -32,6 +44,8 @@ export function PriceFilter({ selected, onSelect }: Props) {
 
   const pct = ((value - MIN) / (MAX - MIN)) * 100;
   const isAll = value >= MAX;
+  const isDark = useIsDark();
+  const trackBg = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
 
   return (
     <div className="flex items-center gap-3">
@@ -45,11 +59,11 @@ export function PriceFilter({ selected, onSelect }: Props) {
         className="price-slider h-1.5 w-28 cursor-pointer appearance-none rounded-full sm:w-36"
         style={{
           background: isAll
-            ? "rgba(255,255,255,0.08)"
-            : `linear-gradient(to right, rgb(16 185 129) 0%, rgb(16 185 129) ${pct}%, rgba(255,255,255,0.08) ${pct}%, rgba(255,255,255,0.08) 100%)`,
+            ? trackBg
+            : `linear-gradient(to right, rgb(16 185 129) 0%, rgb(16 185 129) ${pct}%, ${trackBg} ${pct}%, ${trackBg} 100%)`,
         }}
       />
-      <span className="min-w-[70px] text-xs font-medium tabular-nums text-zinc-300">
+      <span className="min-w-[70px] text-xs font-medium tabular-nums text-zinc-600 dark:text-zinc-300">
         {isAll ? "Any price" : `Under ${value} kr.`}
       </span>
     </div>

@@ -12,7 +12,8 @@ import { geocodeDeals } from "@/lib/geocode";
 import {
   MAP_CENTER,
   MAP_ZOOM,
-  TILE_URL,
+  TILE_URL_DARK,
+  TILE_URL_LIGHT,
   TILE_ATTRIBUTION,
 } from "@/lib/mapConfig";
 import { DealMapMarker } from "./DealMapMarker";
@@ -32,9 +33,23 @@ function FitBounds({ positions }: { positions: [number, number][] }) {
   return null;
 }
 
+function useIsDark() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    const check = () => setDark(document.documentElement.classList.contains("dark"));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return dark;
+}
+
 export function DealMap({ deals }: { deals: Deal[] }) {
   const [coordsMap, setCoordsMap] = useState<Map<string, LatLng>>(new Map());
   const [loading, setLoading] = useState(true);
+  const isDark = useIsDark();
+  const tileUrl = isDark ? TILE_URL_DARK : TILE_URL_LIGHT;
 
   useEffect(() => {
     let cancelled = false;
@@ -77,10 +92,10 @@ export function DealMap({ deals }: { deals: Deal[] }) {
   );
 
   return (
-    <div className="relative h-[calc(100vh-300px)] min-h-[400px] w-full overflow-hidden rounded-xl border border-white/[0.08]">
+    <div className="relative h-[calc(100vh-300px)] min-h-[400px] w-full overflow-hidden rounded-xl border border-zinc-200 dark:border-white/[0.08]">
       {loading && (
-        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-zinc-900/80 backdrop-blur-sm">
-          <div className="text-sm text-zinc-400">Loading map...</div>
+        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-sm dark:bg-zinc-900/80">
+          <div className="text-sm text-zinc-500 dark:text-zinc-400">Loading map...</div>
         </div>
       )}
       <MapContainer
@@ -89,7 +104,7 @@ export function DealMap({ deals }: { deals: Deal[] }) {
         className="h-full w-full"
         zoomControl={false}
       >
-        <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+        <TileLayer key={tileUrl} url={tileUrl} attribution={TILE_ATTRIBUTION} />
         <ZoomControl position="topright" />
         <MarkerClusterGroup
           chunkedLoading
@@ -116,8 +131,8 @@ export function DealMap({ deals }: { deals: Deal[] }) {
       </MapContainer>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] rounded-lg border border-white/[0.08] bg-zinc-900/90 px-3 py-2 backdrop-blur-md">
-        <div className="flex items-center gap-3 text-xs text-zinc-400">
+      <div className="absolute bottom-4 left-4 z-[1000] rounded-lg border border-zinc-200 bg-white/90 px-3 py-2 backdrop-blur-md dark:border-white/[0.08] dark:bg-zinc-900/90">
+        <div className="flex items-center gap-3 text-xs text-zinc-600 dark:text-zinc-400">
           <span className="flex items-center gap-1">
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
             Activity
@@ -135,7 +150,7 @@ export function DealMap({ deals }: { deals: Deal[] }) {
 
       {/* Unmapped counter */}
       {!loading && deals.length > mappableDeals.length && (
-        <div className="absolute bottom-4 right-4 z-[1000] rounded-lg border border-white/[0.08] bg-zinc-900/90 px-3 py-2 text-xs text-zinc-500 backdrop-blur-md">
+        <div className="absolute bottom-4 right-4 z-[1000] rounded-lg border border-zinc-200 bg-white/90 px-3 py-2 text-xs text-zinc-500 backdrop-blur-md dark:border-white/[0.08] dark:bg-zinc-900/90">
           {deals.length - mappableDeals.length} deal
           {deals.length - mappableDeals.length !== 1 ? "s" : ""} without
           location
