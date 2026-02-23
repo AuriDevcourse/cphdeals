@@ -81,10 +81,6 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
           <h3 className="text-[13px] font-bold leading-tight text-zinc-900 line-clamp-1 dark:text-zinc-100">
             {deal.title}
           </h3>
-          {deal.description && (
-            <p className="text-[11px] leading-tight text-zinc-500 line-clamp-1">{deal.description}</p>
-          )}
-
           {/* Row 3: Location + source */}
           <div className="flex items-center gap-2 text-[10px] text-zinc-500">
             {deal.location && (
@@ -148,9 +144,6 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
           <h3 className="text-base font-bold leading-snug text-zinc-900 line-clamp-1 group-hover:text-black dark:text-zinc-100 dark:group-hover:text-white">
             {deal.title}
           </h3>
-          {deal.description && (
-            <p className="text-sm text-zinc-500 line-clamp-1 dark:text-zinc-400">{deal.description}</p>
-          )}
           <div className="flex items-center gap-4 text-xs text-zinc-500">
             {deal.provider && (
               <span className="inline-flex items-center gap-1 truncate">

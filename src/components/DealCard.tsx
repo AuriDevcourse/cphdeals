@@ -10,7 +10,6 @@ import {
   Download,
   MapPin,
   Store,
-  Tag,
 } from "lucide-react";
 import html2canvas from "html2canvas-pro";
 import type { Deal } from "@/lib/types";
@@ -254,13 +253,6 @@ export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number
                 </div>
               )}
 
-              {/* What you get */}
-              {deal.description && (
-                <div className="flex items-start gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                  <Tag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
-                  <span className="line-clamp-2">{deal.description}</span>
-                </div>
-              )}
             </div>
 
             {/* Price block */}

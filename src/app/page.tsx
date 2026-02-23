@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
+import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2 } from "lucide-react";
 import { DealMapWrapper } from "@/components/map/DealMapWrapper";
 import { useDeals, useSearchDeals, useExpiring } from "@/hooks/useDeals";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -45,9 +45,6 @@ function sortDeals(deals: Deal[], sort: SortOption): Deal[] {
         const db = b.discount_pct ?? 0;
         return db - da;
       });
-    case "nearest":
-      // Handled separately in the component with distance map
-      return sorted;
     default:
       return sorted;
   }
@@ -74,6 +71,7 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [hideSoldOut, setHideSoldOut] = useState(true);
+  const [nearMe, setNearMe] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
   const geo = useGeolocation();
@@ -101,7 +99,12 @@ export default function Home() {
   const handleSortChange = (s: SortOption) => {
     setSort(s);
     setVisibleCount(PAGE_SIZE);
-    if (s === "nearest" && !geo.coords) geo.request();
+  };
+
+  const handleNearMeToggle = () => {
+    const next = !nearMe;
+    setNearMe(next);
+    if (next && !geo.coords) geo.request();
   };
 
   const handleTimeChange = (hours: number | undefined) => {
@@ -177,8 +180,8 @@ export default function Home() {
     [distanceMap]
   );
 
-  // Sort by nearest when selected and coords available
-  if (sort === "nearest" && geo.coords) {
+  // When "Near me" is active, use distance as secondary sort (tiebreaker)
+  if (nearMe && geo.coords) {
     deals = [...deals].sort((a, b) => {
       const da = getDealDistance(a) ?? Infinity;
       const db = getDealDistance(b) ?? Infinity;
@@ -259,13 +262,19 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-zinc-500">Sort</span>
-              <SortFilter
-                selected={sort}
-                onSelect={handleSortChange}
-                nearestLoading={geo.loading}
-                nearestAvailable={typeof window !== "undefined" && !!navigator.geolocation}
-              />
+              <SortFilter selected={sort} onSelect={handleSortChange} />
             </div>
+            <button
+              onClick={handleNearMeToggle}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                nearMe
+                  ? "border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400"
+                  : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:text-zinc-200"
+              }`}
+            >
+              {geo.loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <LocateFixed className="h-3 w-3" />}
+              Near Me
+            </button>
             <button
               onClick={() => { setHideSoldOut((v) => !v); setVisibleCount(PAGE_SIZE); }}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
@@ -336,13 +345,13 @@ export default function Home() {
           ) : effectiveView === "grid" ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {visibleDeals.map((deal) => (
-                <DealCard key={deal.deal_id} deal={deal} distanceKm={sort === "nearest" ? getDealDistance(deal) : undefined} />
+                <DealCard key={deal.deal_id} deal={deal} distanceKm={nearMe ? getDealDistance(deal) : undefined} />
               ))}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
               {visibleDeals.map((deal) => (
-                <DealRow key={deal.deal_id} deal={deal} distanceKm={sort === "nearest" ? getDealDistance(deal) : undefined} />
+                <DealRow key={deal.deal_id} deal={deal} distanceKm={nearMe ? getDealDistance(deal) : undefined} />
               ))}
             </div>
           )}
