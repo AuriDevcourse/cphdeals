@@ -11,6 +11,7 @@ import { DealRow } from "@/components/DealRow";
 import { DealSkeleton } from "@/components/DealSkeleton";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { PriceFilter } from "@/components/PriceFilter";
+import type { PriceRange } from "@/components/PriceFilter";
 import { TimeFilter } from "@/components/TimeFilter";
 import { SortFilter } from "@/components/SortFilter";
 import type { SortOption } from "@/components/SortFilter";
@@ -63,7 +64,7 @@ function useIsMobile() {
 
 export default function Home() {
   const [categories, setCategories] = useState<Set<string>>(new Set());
-  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+  const [priceRange, setPriceRange] = useState<PriceRange>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [showExpiring, setShowExpiring] = useState(false);
   const [maxAge, setMaxAge] = useState<number | undefined>(undefined);
@@ -76,8 +77,8 @@ export default function Home() {
   const isMobile = useIsMobile();
   const geo = useGeolocation();
 
-  const dealsQuery = useDeals(undefined, maxPrice);
-  const searchResults = useSearchDeals(searchQuery, maxPrice);
+  const dealsQuery = useDeals(undefined, priceRange.max);
+  const searchResults = useSearchDeals(searchQuery, priceRange.max);
 
   const handleSearch = useCallback((q: string) => {
     setSearchQuery(q);
@@ -115,8 +116,8 @@ export default function Home() {
     setVisibleCount(PAGE_SIZE);
   };
 
-  const handlePriceChange = (price: number | undefined) => {
-    setMaxPrice(price);
+  const handlePriceChange = (range: PriceRange) => {
+    setPriceRange(range);
     setVisibleCount(PAGE_SIZE);
   };
 
@@ -138,6 +139,11 @@ export default function Home() {
   // Filter by selected categories (client-side)
   if (categories.size > 0) {
     deals = deals.filter((d) => categories.has(d.category));
+  }
+
+  // Filter by min price (client-side, for ">500" option)
+  if (priceRange.min != null) {
+    deals = deals.filter((d) => (d.deal_price ?? 0) >= priceRange.min!);
   }
 
   // Filter by expiring (deals with expiry within 7 days)
@@ -262,7 +268,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-zinc-500">Price</span>
-              <PriceFilter selected={maxPrice} onSelect={handlePriceChange} />
+              <PriceFilter selected={priceRange} onSelect={handlePriceChange} />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-zinc-500">Added</span>

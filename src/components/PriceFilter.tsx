@@ -1,27 +1,35 @@
 "use client";
 
-const priceOptions: { value: number | undefined; label: string }[] = [
-  { value: undefined, label: "Any" },
-  { value: 100, label: "Under 100" },
-  { value: 250, label: "Under 250" },
-  { value: 500, label: "Under 500" },
-  { value: 1000, label: "Under 1000" },
+export interface PriceRange {
+  max?: number;
+  min?: number;
+}
+
+const priceOptions: { label: string; range: PriceRange }[] = [
+  { label: "<100", range: { max: 100 } },
+  { label: "<250", range: { max: 250 } },
+  { label: "<500", range: { max: 500 } },
+  { label: ">500", range: { min: 500 } },
 ];
 
+function rangesEqual(a: PriceRange, b: PriceRange) {
+  return a.max === b.max && a.min === b.min;
+}
+
 interface Props {
-  selected: number | undefined;
-  onSelect: (price: number | undefined) => void;
+  selected: PriceRange;
+  onSelect: (range: PriceRange) => void;
 }
 
 export function PriceFilter({ selected, onSelect }: Props) {
   return (
     <div className="flex flex-wrap gap-2">
       {priceOptions.map((opt) => {
-        const active = selected === opt.value;
+        const active = rangesEqual(selected, opt.range);
         return (
           <button
             key={opt.label}
-            onClick={() => onSelect(opt.value)}
+            onClick={() => onSelect(active ? {} : opt.range)}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               active
                 ? "bg-emerald-500/80 text-white shadow-lg shadow-emerald-500/10 backdrop-blur-md"
