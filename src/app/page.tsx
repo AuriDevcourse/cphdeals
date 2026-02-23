@@ -140,8 +140,16 @@ export default function Home() {
     deals = deals.filter((d) => !d.sold_out);
   }
 
-  // Apply sorting
-  deals = sortDeals(deals, sort);
+  // Apply sorting — expiring view always sorts soonest-first
+  if (showExpiring) {
+    deals = [...deals].sort((a, b) => {
+      const ea = a.expiry ? new Date(a.expiry).getTime() : Infinity;
+      const eb = b.expiry ? new Date(b.expiry).getTime() : Infinity;
+      return ea - eb;
+    });
+  } else {
+    deals = sortDeals(deals, sort);
+  }
 
   // Pagination
   const totalDeals = deals.length;
