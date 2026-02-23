@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { LayoutGrid, List, Map, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff } from "lucide-react";
 import { DealMapWrapper } from "@/components/map/DealMapWrapper";
 import { useDeals, useSearchDeals, useExpiring } from "@/hooks/useDeals";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { COPENHAGEN_COORDS, haversineKm } from "@/lib/geocode";
 import { DealCard } from "@/components/DealCard";
 import { DealRow } from "@/components/DealRow";
 import { DealSkeleton } from "@/components/DealSkeleton";
@@ -43,6 +45,9 @@ function sortDeals(deals: Deal[], sort: SortOption): Deal[] {
         const db = b.discount_pct ?? 0;
         return db - da;
       });
+    case "nearest":
+      // Handled separately in the component with distance map
+      return sorted;
     default:
       return sorted;
   }
@@ -71,6 +76,7 @@ export default function Home() {
   const [hideSoldOut, setHideSoldOut] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
+  const geo = useGeolocation();
 
   const dealsQuery = useDeals(category, maxPrice);
   const searchResults = useSearchDeals(searchQuery, maxPrice);
@@ -95,6 +101,7 @@ export default function Home() {
   const handleSortChange = (s: SortOption) => {
     setSort(s);
     setVisibleCount(PAGE_SIZE);
+    if (s === "nearest" && !geo.coords) geo.request();
   };
 
   const handleTimeChange = (hours: number | undefined) => {
@@ -149,6 +156,34 @@ export default function Home() {
     });
   } else {
     deals = sortDeals(deals, sort);
+  }
+
+  // Compute distances when user location is available
+  const distanceMap = useMemo(() => {
+    if (!geo.coords) return new Map<string, number>();
+    const map = new Map<string, number>();
+    for (const [name, pos] of Object.entries(COPENHAGEN_COORDS)) {
+      map.set(name, haversineKm(geo.coords.lat, geo.coords.lng, pos.lat, pos.lng));
+    }
+    return map;
+  }, [geo.coords]);
+
+  const getDealDistance = useCallback(
+    (deal: Deal): number | undefined => {
+      if (!deal.location || distanceMap.size === 0) return undefined;
+      const key = deal.location.trim().toLowerCase();
+      return distanceMap.get(key);
+    },
+    [distanceMap]
+  );
+
+  // Sort by nearest when selected and coords available
+  if (sort === "nearest" && geo.coords) {
+    deals = [...deals].sort((a, b) => {
+      const da = getDealDistance(a) ?? Infinity;
+      const db = getDealDistance(b) ?? Infinity;
+      return da - db;
+    });
   }
 
   // Pagination
@@ -224,7 +259,12 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-zinc-500">Sort</span>
-              <SortFilter selected={sort} onSelect={handleSortChange} />
+              <SortFilter
+                selected={sort}
+                onSelect={handleSortChange}
+                nearestLoading={geo.loading}
+                nearestAvailable={typeof window !== "undefined" && !!navigator.geolocation}
+              />
             </div>
             <button
               onClick={() => { setHideSoldOut((v) => !v); setVisibleCount(PAGE_SIZE); }}
@@ -287,7 +327,7 @@ export default function Home() {
                 className={`rounded-md p-1.5 transition-colors ${viewMode === "map" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
                 title="Map view"
               >
-                <Map className="h-4 w-4" />
+                <MapIcon className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -296,13 +336,13 @@ export default function Home() {
           ) : effectiveView === "grid" ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {visibleDeals.map((deal) => (
-                <DealCard key={deal.deal_id} deal={deal} />
+                <DealCard key={deal.deal_id} deal={deal} distanceKm={sort === "nearest" ? getDealDistance(deal) : undefined} />
               ))}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
               {visibleDeals.map((deal) => (
-                <DealRow key={deal.deal_id} deal={deal} />
+                <DealRow key={deal.deal_id} deal={deal} distanceKm={sort === "nearest" ? getDealDistance(deal) : undefined} />
               ))}
             </div>
           )}

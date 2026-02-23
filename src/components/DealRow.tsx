@@ -4,7 +4,7 @@ import { Clock, ExternalLink, MapPin, Store } from "lucide-react";
 import { categoryConfig, getExpiryInfo } from "@/components/DealCard";
 import type { Deal } from "@/lib/types";
 
-export function DealRow({ deal }: { deal: Deal }) {
+export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number }) {
   const config = categoryConfig[deal.category] ?? categoryConfig.activity;
   const Icon = config.icon;
   const expiry = getExpiryInfo(deal.expiry);
@@ -93,6 +93,11 @@ export function DealRow({ deal }: { deal: Deal }) {
                 <span className="truncate">{deal.location}</span>
               </span>
             )}
+            {distanceKm != null && (
+              <span className="shrink-0 rounded-full border border-sky-500/20 bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-sky-600 dark:text-sky-400">
+                {distanceKm.toFixed(1)} km
+              </span>
+            )}
             {deal.provider && (
               <span className="inline-flex items-center gap-0.5 truncate">
                 <Store className="h-2.5 w-2.5 shrink-0" />
@@ -157,6 +162,11 @@ export function DealRow({ deal }: { deal: Deal }) {
               <span className="inline-flex items-center gap-1 truncate">
                 <MapPin className="h-3 w-3 shrink-0" />
                 <span className="truncate">{deal.location}</span>
+              </span>
+            )}
+            {distanceKm != null && (
+              <span className="shrink-0 rounded-full border border-sky-500/20 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-600 dark:text-sky-400">
+                {distanceKm.toFixed(1)} km
               </span>
             )}
           </div>

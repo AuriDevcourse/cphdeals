@@ -112,7 +112,7 @@ async function saveAsImage(el: HTMLElement, title: string) {
   }
 }
 
-export function DealCard({ deal }: { deal: Deal }) {
+export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const holoRef = useRef<HTMLDivElement>(null);
   const config = categoryConfig[deal.category] ?? categoryConfig.activity;
@@ -246,6 +246,11 @@ export function DealCard({ deal }: { deal: Deal }) {
                 <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
                   <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
                   <span className="truncate">{deal.location}</span>
+                  {distanceKm != null && (
+                    <span className="shrink-0 rounded-full border border-sky-500/20 bg-sky-500/10 px-2 py-0.5 text-xs font-semibold text-sky-600 dark:text-sky-400">
+                      {distanceKm.toFixed(1)} km
+                    </span>
+                  )}
                 </div>
               )}
 
