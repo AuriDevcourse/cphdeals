@@ -12,7 +12,7 @@ import {
   Store,
   Tag,
 } from "lucide-react";
-import { toPng } from "html-to-image";
+import html2canvas from "html2canvas-pro";
 import type { Deal } from "@/lib/types";
 
 
@@ -64,28 +64,51 @@ export function getExpiryInfo(expiry: string | null) {
 }
 
 async function saveAsImage(el: HTMLElement, title: string) {
+  // Swap cross-origin images to proxied same-origin versions
+  const images = el.querySelectorAll<HTMLImageElement>("img");
+  const originalSrcs = new Map<HTMLImageElement, string>();
+
+  await Promise.all(
+    Array.from(images).map(async (img) => {
+      if (!img.src || img.src.startsWith("data:") || img.src.startsWith("blob:")) return;
+      originalSrcs.set(img, img.src);
+      try {
+        const res = await fetch(`/api/img?url=${encodeURIComponent(img.src)}`);
+        if (!res.ok) return;
+        const blob = await res.blob();
+        img.src = URL.createObjectURL(blob);
+        await new Promise<void>((resolve) => {
+          if (img.complete) { resolve(); return; }
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+        });
+      } catch { /* leave original src */ }
+    })
+  );
+
   try {
-    const dataUrl = await toPng(el, {
-      pixelRatio: 2,
+    const canvas = await html2canvas(el, {
       backgroundColor: "#09090b",
-      // Fetch cross-origin images through a data URL to avoid CORS errors
-      fetchRequestInit: { mode: "cors" },
-      skipFonts: true,
-      filter: (node: HTMLElement) => {
-        // Skip the holographic overlay (not needed in export)
-        if (node.classList?.contains("holo-shimmer")) return false;
-        return true;
-      },
-      imagePlaceholder:
-        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='256'%3E%3Crect fill='%2327272a' width='400' height='256'/%3E%3C/svg%3E",
+      scale: 2,
+      logging: false,
+      useCORS: true,
+      ignoreElements: (element) =>
+        element.classList?.contains("holo-shimmer") ||
+        element.getAttribute("data-export-hide") === "true",
     });
 
     const link = document.createElement("a");
     link.download = `deal-${title.slice(0, 30).replace(/[^a-zA-Z0-9]/g, "-")}.png`;
-    link.href = dataUrl;
+    link.href = canvas.toDataURL("image/png");
     link.click();
   } catch (err) {
     console.error("Failed to save image:", err);
+  } finally {
+    // Restore original srcs
+    originalSrcs.forEach((src, img) => {
+      URL.revokeObjectURL(img.src);
+      img.src = src;
+    });
   }
 }
 
@@ -267,8 +290,8 @@ export function DealCard({ deal }: { deal: Deal }) {
           {/* Perforated edge */}
           <div className="voucher-edge relative z-[2]" />
 
-          {/* Footer */}
-          <div className="relative z-[2] flex items-center justify-between px-5 py-2.5">
+          {/* Footer — hidden from image export */}
+          <div data-export-hide="true" className="relative z-[2] flex items-center justify-between px-5 py-2.5">
             <span className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wider text-zinc-500 transition-colors group-hover:bg-zinc-800 group-hover:text-zinc-300">
               View deal
               <ExternalLink className="h-3.5 w-3.5" />
