@@ -68,7 +68,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [hideSoldOut, setHideSoldOut] = useState(false);
+  const [hideSoldOut, setHideSoldOut] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
 
