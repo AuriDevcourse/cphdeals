@@ -277,7 +277,7 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`hidden rounded-md p-1.5 transition-colors sm:block ${viewMode === "list" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
+                className={`rounded-md p-1.5 transition-colors ${viewMode === "map" ? "" : "hidden sm:block"} ${viewMode === "list" ? "bg-zinc-200 text-zinc-800 dark:bg-white/[0.1] dark:text-zinc-200" : "text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"}`}
                 title="List view"
               >
                 <List className="h-4 w-4" />
