@@ -12,6 +12,7 @@ export interface Deal {
   provider: string | null;
   image_url: string | null;
   expiry: string | null;
+  sold_out: number | null;
   created_at: string | null;
   updated_at: string;
 }

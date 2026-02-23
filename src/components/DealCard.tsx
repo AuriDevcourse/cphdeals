@@ -187,6 +187,15 @@ export function DealCard({ deal }: { deal: Deal }) {
             )}
           </div>
 
+          {/* Sold-out overlay */}
+          {!!deal.sold_out && (
+            <div className="absolute inset-0 z-[4] flex items-center justify-center bg-black/60">
+              <span className="rounded-lg border-2 border-white/30 bg-black/70 px-5 py-2 text-lg font-black uppercase tracking-widest text-white">
+                Sold out
+              </span>
+            </div>
+          )}
+
           {/* Discount badge */}
           {deal.discount_pct != null && deal.discount_pct > 0 && (
             <div className="absolute right-3 top-5 z-[3] rounded-lg bg-red-500 px-2.5 py-1 text-sm font-black text-white shadow-lg">
