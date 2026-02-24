@@ -292,9 +292,14 @@ export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number
               </div>
             </div>
 
-            {/* Source tag */}
-            <div className="mt-3 text-xs text-zinc-400 dark:text-zinc-600">
-              via {deal.source}
+            {/* Source + added date */}
+            <div className="mt-3 flex items-center justify-between text-xs text-zinc-400 dark:text-zinc-600">
+              <span>via {deal.source}</span>
+              {deal.created_at && (
+                <span>
+                  {new Date(deal.created_at).toLocaleDateString("en-DK", { month: "short", day: "numeric" })}
+                </span>
+              )}
             </div>
           </div>
 

@@ -74,7 +74,10 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
                 {expiry.text}
               </span>
             )}
-            <span className="ml-auto shrink-0 text-[9px] text-zinc-600">via {deal.source}</span>
+            <span className="ml-auto shrink-0 text-[9px] text-zinc-600">
+              via {deal.source}
+              {deal.created_at && <> · {new Date(deal.created_at).toLocaleDateString("en-DK", { month: "short", day: "numeric" })}</>}
+            </span>
           </div>
 
           {/* Row 2: Title + description */}
@@ -200,7 +203,10 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
             </span>
           )}
           <div className="flex items-center gap-3 text-xs text-zinc-600">
-            <span>via {deal.source}</span>
+            <span>
+              via {deal.source}
+              {deal.created_at && <> · {new Date(deal.created_at).toLocaleDateString("en-DK", { month: "short", day: "numeric" })}</>}
+            </span>
             <span className="flex items-center gap-1 text-zinc-400 transition-colors group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:text-zinc-300">
               View deal <ExternalLink className="h-3 w-3" />
             </span>
