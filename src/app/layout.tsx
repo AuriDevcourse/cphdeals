@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { QueryProvider } from "@/providers/QueryProvider";
 
 import "./globals.css";
@@ -69,6 +70,7 @@ export default function RootLayout({
       >
         <QueryProvider>{children}</QueryProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

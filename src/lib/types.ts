@@ -13,6 +13,7 @@ export interface Deal {
   image_url: string | null;
   expiry: string | null;
   sold_out: number | null;
+  fee: number | null;
   created_at: string | null;
   updated_at: string;
 }

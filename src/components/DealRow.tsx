@@ -110,6 +110,11 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
                   {Math.round(deal.deal_price)}
                   <span className="ml-0.5 text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">kr.</span>
                 </span>
+                {deal.fee != null && deal.fee > 0 && (
+                  <span className="text-[9px] text-zinc-400 dark:text-zinc-500">
+                    + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} gebyr
+                  </span>
+                )}
                 {deal.original_price != null && (
                   <span className="text-[10px] text-zinc-500 line-through">
                     {Math.round(deal.original_price)} kr.
@@ -177,6 +182,11 @@ export function DealRow({ deal, distanceKm }: { deal: Deal; distanceKm?: number 
                 {deal.original_price != null && (
                   <div className="text-xs text-zinc-500 line-through">
                     {Math.round(deal.original_price)} kr.
+                  </div>
+                )}
+                {deal.fee != null && deal.fee > 0 && (
+                  <div className="text-[11px] text-zinc-400 dark:text-zinc-500">
+                    + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} kr. gebyr
                   </div>
                 )}
               </>

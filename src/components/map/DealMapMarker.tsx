@@ -73,6 +73,11 @@ export function DealMapMarker({
                   {deal.original_price != null && (
                     <s>{Math.round(deal.original_price)} kr.</s>
                   )}
+                  {deal.fee != null && deal.fee > 0 && (
+                    <span style={{ fontSize: 10, color: "#a1a1aa", marginLeft: 4 }}>
+                      + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} gebyr
+                    </span>
+                  )}
                 </>
               ) : (
                 <span style={{ fontSize: 13, color: "#a1a1aa" }}>

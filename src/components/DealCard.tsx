@@ -278,6 +278,11 @@ export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number
                       See price on site
                     </span>
                   )}
+                  {deal.deal_price != null && deal.fee != null && deal.fee > 0 && (
+                    <div className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
+                      + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} kr. gebyr = {Math.round(deal.deal_price + deal.fee)} kr. total
+                    </div>
+                  )}
                 </div>
                 {savings != null && savings > 0 && (
                   <span className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-sm font-bold text-emerald-400 backdrop-blur-sm">
