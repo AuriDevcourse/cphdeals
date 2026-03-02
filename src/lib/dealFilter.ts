@@ -92,6 +92,53 @@ function cleanProvider(deal: Deal): Deal {
   return deal;
 }
 
+// Keywords that indicate a deal is about drinks (bars, pubs, cocktails, wine, beer)
+const DRINKS_KEYWORDS = [
+  "cocktail",
+  "cocktails",
+  "øl",
+  "beer",
+  "beers",
+  "draft beer",
+  "fadøl",
+  "vin ",       // "vin " with trailing space to avoid matching "vindue" etc.
+  "vine ",
+  "wine",
+  "vinbar",
+  "wine bar",
+  "bar ",        // trailing space to avoid matching "barbecue" etc.
+  "barer",
+  "pub",
+  "happy hour",
+  "drinks",
+  "drink",
+  "cocktailbar",
+  "gin ",
+  "gin&tonic",
+  "g&t",
+  "spritz",
+  "aperol",
+  "mojito",
+  "tasting board",
+  "fadbamser",
+  "glas vin",
+  "naturvin",
+];
+
+/** Reclassify food deals as "drinks" when they match drink-related keywords */
+function reclassifyDrinks(deal: Deal): Deal {
+  // Only reclassify food deals (don't touch activity/entertainment)
+  if (deal.category !== "food") return deal;
+
+  const text = `${deal.title} ${deal.description ?? ""} ${deal.provider ?? ""}`.toLowerCase();
+  const isDrink = DRINKS_KEYWORDS.some((kw) => text.includes(kw));
+
+  if (isDrink) {
+    return { ...deal, category: "drinks" };
+  }
+  return deal;
+}
+
 /**
  * Deduplicate deals that appear on multiple sources for the same venue.
  * Keeps the version with the lowest price (best deal). Matches on
@@ -140,6 +187,7 @@ function deduplicateDeals(deals: Deal[]): Deal[] {
 export function filterJunkDeals(deals: Deal[]): Deal[] {
   const filtered = deals
     .map(cleanProvider)
+    .map(reclassifyDrinks)
     .filter((d) => {
       const provider = (d.provider ?? "").toLowerCase();
 

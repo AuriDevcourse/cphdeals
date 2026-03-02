@@ -14,5 +14,6 @@ export const TILE_ATTRIBUTION =
 export const MARKER_COLORS: Record<string, string> = {
   activity: "#10b981",
   food: "#f59e0b",
+  drinks: "#06b6d4",
   entertainment: "#a855f7",
 };

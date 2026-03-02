@@ -142,6 +142,10 @@ export function DealMap({ deals }: { deals: Deal[] }) {
             Food
           </span>
           <span className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-cyan-500" />
+            Drinks
+          </span>
+          <span className="flex items-center gap-1">
             <span className="h-2.5 w-2.5 rounded-full bg-purple-500" />
             Entertainment
           </span>

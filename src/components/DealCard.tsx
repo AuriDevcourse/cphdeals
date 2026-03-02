@@ -7,6 +7,7 @@ import {
   Dumbbell,
   UtensilsCrossed,
   Clapperboard,
+  Beer,
   Download,
   MapPin,
   Store,
@@ -35,6 +36,16 @@ export const categoryConfig = {
     glowOuter: "245, 184, 60",   // amber
     borderA: "234, 138, 30",
     borderB: "245, 184, 60",
+  },
+  drinks: {
+    gradient: "from-cyan-600 to-teal-400",
+    bg: "bg-cyan-500/10 text-cyan-400",
+    icon: Beer,
+    label: "Drinks",
+    glowInner: "6, 182, 212",    // cyan
+    glowOuter: "20, 184, 166",   // teal
+    borderA: "6, 182, 212",
+    borderB: "20, 184, 166",
   },
   entertainment: {
     gradient: "from-purple-600 to-violet-400",

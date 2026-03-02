@@ -4,12 +4,14 @@ import {
   Dumbbell,
   UtensilsCrossed,
   Clapperboard,
+  Beer,
   Clock,
 } from "lucide-react";
 
 const categories = [
   { value: "activity", label: "Activities", icon: Dumbbell },
   { value: "food", label: "Food", icon: UtensilsCrossed },
+  { value: "drinks", label: "Drinks", icon: Beer },
   { value: "entertainment", label: "Entertainment", icon: Clapperboard },
 ] as const;
 

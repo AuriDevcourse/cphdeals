@@ -23,6 +23,9 @@ export function StatsBar() {
         <span>{data.by_category.activity} activities</span>
       )}
       {data.by_category.food && <span>{data.by_category.food} food</span>}
+      {data.by_category.drinks && (
+        <span>{data.by_category.drinks} drinks</span>
+      )}
       {data.by_category.entertainment && (
         <span>{data.by_category.entertainment} entertainment</span>
       )}

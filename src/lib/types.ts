@@ -1,7 +1,7 @@
 export interface Deal {
   deal_id: string;
   source: string;
-  category: "activity" | "food" | "entertainment";
+  category: "activity" | "food" | "entertainment" | "drinks";
   title: string;
   url: string;
   description: string;
