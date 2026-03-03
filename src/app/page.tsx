@@ -231,16 +231,14 @@ export default function Home() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between gap-3">
-          {/* Mobile: search left */}
+          {/* Logo — smaller on mobile */}
+          <h1 className="flex shrink-0 items-center">
+            <img src="/logo-black.png" alt="Dealround" className="h-9 dark:hidden sm:h-14" />
+            <img src="/logo-white.png" alt="Dealround" className="hidden h-9 dark:block sm:h-14" />
+          </h1>
+          {/* Mobile: search */}
           <div className="flex flex-1 items-center gap-2 sm:hidden">
             <SearchBar onSearch={handleSearch} />
-          </div>
-          {/* Desktop: logo left */}
-          <div className="hidden sm:block">
-            <h1 className="flex items-center">
-              <img src="/logo-black.png" alt="Dealround" className="h-14 dark:hidden" />
-              <img src="/logo-white.png" alt="Dealround" className="h-14 hidden dark:block" />
-            </h1>
           </div>
           {/* Right side: search (desktop only) + LinkedIn + theme */}
           <div className="flex items-center gap-2">
