@@ -226,9 +226,9 @@ export default function Home() {
       <div className="mb-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="flex items-center gap-3 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-              <img src="/icon.png" alt="Dealround" className="h-10 w-10" />
-              Dealround
+            <h1 className="flex items-center">
+              <img src="/logo-black.png" alt="Dealround" className="h-10 dark:hidden" />
+              <img src="/logo-white.png" alt="Dealround" className="h-10 hidden dark:block" />
             </h1>
           </div>
           <div className="flex items-center gap-2">
