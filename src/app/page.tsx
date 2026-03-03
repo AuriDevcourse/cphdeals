@@ -227,8 +227,8 @@ export default function Home() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="flex items-center gap-3 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-              <img src="/logo.png" alt="CPH Deal Finder" className="h-10 w-10" />
-              CPH Deals
+              <img src="/icon.png" alt="Dealround" className="h-10 w-10" />
+              Dealround
             </h1>
           </div>
           <div className="flex items-center gap-2">

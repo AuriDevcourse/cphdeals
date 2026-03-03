@@ -12,7 +12,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "CPH Deals — Best Deals in Copenhagen",
+  title: "Dealround — Best Deals in Copenhagen",
   description:
     "Find the best deals on activities, food & entertainment in Copenhagen. Updated daily from 8+ Danish deal sites.",
   keywords: [
@@ -21,33 +21,33 @@ export const metadata: Metadata = {
     "food deals Copenhagen",
     "activity deals",
     "restaurant deals",
-    "CPH deals",
+    "Dealround",
   ],
   icons: {
     icon: "/favicon.png",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "CPH Deals — Best Deals in Copenhagen",
+    title: "Dealround — Best Deals in Copenhagen",
     description:
       "Find the best deals on activities, food & entertainment in Copenhagen. Updated daily from 8+ Danish deal sites.",
     type: "website",
     locale: "en_DK",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "CPH Deals",
+        alt: "Dealround",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CPH Deals — Best Deals in Copenhagen",
+    title: "Dealround — Best Deals in Copenhagen",
     description:
       "Find the best deals on activities, food & entertainment in Copenhagen.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
 };
 
