@@ -43,7 +43,7 @@ export function CategoryFilter({
               <button
                 key={cat.value}
                 onClick={() => onToggle(cat.value)}
-                className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors ${
+                className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors ${
                   active
                     ? "border-transparent bg-white/90 text-zinc-900 dark:bg-white/90 dark:text-zinc-900"
                     : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"
@@ -52,7 +52,6 @@ export function CategoryFilter({
                 <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                   {active ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
                 </span>
-                {/* Mobile: show label only when selected. Desktop: always show */}
                 <span className={`${active ? "inline" : "hidden"} sm:inline`}>
                   {cat.label}
                 </span>
@@ -61,7 +60,7 @@ export function CategoryFilter({
           })}
           <button
             onClick={onExpiringToggle}
-            className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors ${
               expiring
                 ? "border-transparent bg-amber-500/80 text-white"
                 : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:bg-white/[0.1] dark:hover:text-zinc-200"

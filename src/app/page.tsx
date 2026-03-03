@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2, BadgeCheck } from "lucide-react";
+import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2 } from "lucide-react";
 import { DealMapWrapper } from "@/components/map/DealMapWrapper";
 import { useDeals, useSearchDeals } from "@/hooks/useDeals";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -72,7 +72,7 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [hideSoldOut, setHideSoldOut] = useState(true);
-  const [noFeeOnly, setNoFeeOnly] = useState(false);
+
   const [nearMe, setNearMe] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -172,10 +172,6 @@ export default function Home() {
     deals = deals.filter((d) => !d.sold_out);
   }
 
-  // Show only no-fee deals (fee must be explicitly 0, not null/unknown)
-  if (noFeeOnly) {
-    deals = deals.filter((d) => d.fee === 0);
-  }
 
   // Apply sorting — when expiring is active, sort by soonest-first as secondary
   deals = sortDeals(deals, sort);
@@ -231,20 +227,14 @@ export default function Home() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between gap-3">
-          {/* Logo — smaller on mobile */}
+          {/* Logo */}
           <h1 className="flex shrink-0 items-center">
             <img src="/logo-black.png" alt="Dealround" className="h-9 dark:hidden sm:h-14" />
             <img src="/logo-white.png" alt="Dealround" className="hidden h-9 dark:block sm:h-14" />
           </h1>
-          {/* Mobile: search */}
-          <div className="flex flex-1 items-center gap-2 sm:hidden">
-            <SearchBar onSearch={handleSearch} />
-          </div>
-          {/* Right side: search (desktop only) + LinkedIn + theme */}
+          {/* Right side: search + LinkedIn + theme */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:block">
-              <SearchBar onSearch={handleSearch} />
-            </div>
+            <SearchBar onSearch={handleSearch} />
             <a
               href="https://www.linkedin.com/in/auribaci/"
               target="_blank"
@@ -322,17 +312,6 @@ export default function Home() {
             >
               <EyeOff className="h-3 w-3" />
               Hide Sold Out
-            </button>
-            <button
-              onClick={() => { setNoFeeOnly((v) => !v); setVisibleCount(PAGE_SIZE); }}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
-                noFeeOnly
-                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                  : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:text-zinc-200"
-              }`}
-            >
-              <BadgeCheck className="h-3 w-3" />
-              No Fee
             </button>
           </div>
         </div>

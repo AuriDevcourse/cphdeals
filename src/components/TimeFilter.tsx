@@ -3,7 +3,6 @@
 const timeOptions = [
   { value: undefined, label: "Any time" },
   { value: 24, label: "Last 24h" },
-  { value: 168, label: "Last week" },
 ] as const;
 
 interface Props {
