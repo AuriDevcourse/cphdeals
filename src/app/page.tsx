@@ -230,15 +230,23 @@ export default function Home() {
     <main className="relative z-10 mx-auto max-w-[1400px] px-4 py-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="flex items-center justify-between gap-3">
+          {/* Mobile: search left */}
+          <div className="flex flex-1 items-center gap-2 sm:hidden">
+            <SearchBar onSearch={handleSearch} />
+          </div>
+          {/* Desktop: logo left */}
+          <div className="hidden sm:block">
             <h1 className="flex items-center">
               <img src="/logo-black.png" alt="Dealround" className="h-14 dark:hidden" />
               <img src="/logo-white.png" alt="Dealround" className="h-14 hidden dark:block" />
             </h1>
           </div>
+          {/* Right side: search (desktop only) + LinkedIn + theme */}
           <div className="flex items-center gap-2">
-            <SearchBar onSearch={handleSearch} />
+            <div className="hidden sm:block">
+              <SearchBar onSearch={handleSearch} />
+            </div>
             <a
               href="https://www.linkedin.com/in/auribaci/"
               target="_blank"
