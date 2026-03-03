@@ -10,6 +10,7 @@ const BLOCKED_PROVIDERS = new Set([
   "my price", // Bownty reseller with vague titles and no location
 ]);
 
+
 // Physical product keywords — specific Danish compound words that are clearly
 // products, not experiences. Matched as substrings against title + description.
 const PRODUCT_KEYWORDS = [
@@ -31,6 +32,18 @@ const PRODUCT_KEYWORDS = [
   "kropsholdning",
   "prepping-udstyr",
   "prepping udstyr",
+  "vipper og bryn",
+  "vippeløft",
+  "vippelift",
+  "brynløft",
+  "ansigtsbehandling",
+  "hudpleje",
+  "hårkur",
+  "hårbehandling",
+  "neglepleje",
+  "gelenegle",
+  "shellac",
+  "akupunktur",
 ];
 
 // Non-Copenhagen locations to block. Uses ASCII-safe substrings because the API
@@ -190,7 +203,6 @@ export function filterJunkDeals(deals: Deal[]): Deal[] {
     .map(reclassifyDrinks)
     .filter((d) => {
       const provider = (d.provider ?? "").toLowerCase();
-
       // Block known junk providers
       if (BLOCKED_PROVIDERS.has(provider)) return false;
 

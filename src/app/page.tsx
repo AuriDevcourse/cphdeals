@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2 } from "lucide-react";
+import { LayoutGrid, List, Map as MapIcon, ChevronDown, SlidersHorizontal, EyeOff, LocateFixed, Loader2, BadgeCheck } from "lucide-react";
 import { DealMapWrapper } from "@/components/map/DealMapWrapper";
 import { useDeals, useSearchDeals } from "@/hooks/useDeals";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -72,6 +72,7 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("newest");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [hideSoldOut, setHideSoldOut] = useState(true);
+  const [noFeeOnly, setNoFeeOnly] = useState(false);
   const [nearMe, setNearMe] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -171,6 +172,11 @@ export default function Home() {
     deals = deals.filter((d) => !d.sold_out);
   }
 
+  // Show only no-fee deals (fee must be explicitly 0, not null/unknown)
+  if (noFeeOnly) {
+    deals = deals.filter((d) => d.fee === 0);
+  }
+
   // Apply sorting — when expiring is active, sort by soonest-first as secondary
   deals = sortDeals(deals, sort);
   if (showExpiring) {
@@ -227,12 +233,21 @@ export default function Home() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="flex items-center">
-              <img src="/logo-black.png" alt="Dealround" className="h-10 dark:hidden" />
-              <img src="/logo-white.png" alt="Dealround" className="h-10 hidden dark:block" />
+              <img src="/logo-black.png" alt="Dealround" className="h-14 dark:hidden" />
+              <img src="/logo-white.png" alt="Dealround" className="h-14 hidden dark:block" />
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <SearchBar onSearch={handleSearch} />
+            <a
+              href="https://www.linkedin.com/in/auribaci/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg p-2 text-emerald-500 transition-colors hover:bg-zinc-200 hover:text-emerald-600 dark:hover:bg-zinc-800 dark:hover:text-emerald-400"
+              title="LinkedIn"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 504.4 504.4" fill="currentColor"><path d="M377.6,0.2H126.4C56.8,0.2,0,57,0,126.6v251.6c0,69.2,56.8,126,126.4,126H378c69.6,0,126.4-56.8,126.4-126.4V126.6C504,57,447.2,0.2,377.6,0.2z M168,408.2H96v-208h72V408.2z M131.6,168.2c-20.4,0-36.8-16.4-36.8-36.8c0-20.4,16.4-36.8,36.8-36.8c20.4,0,36.8,16.4,36.8,36.8C168,151.8,151.6,168.2,131.6,168.2z M408.4,408.2H408h-60V307.4c0-24.4-3.2-55.6-36.4-55.6c-34,0-39.6,26.4-39.6,54v102.4h-60v-208h56v28h1.6c8.8-16,29.2-28.4,61.2-28.4c66,0,77.6,38,77.6,94.4V408.2z"/></svg>
+            </a>
             <ThemeToggle />
           </div>
         </div>
@@ -301,6 +316,17 @@ export default function Home() {
             >
               <EyeOff className="h-3 w-3" />
               Hide Sold Out
+            </button>
+            <button
+              onClick={() => { setNoFeeOnly((v) => !v); setVisibleCount(PAGE_SIZE); }}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                noFeeOnly
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "border-zinc-200 bg-zinc-100 text-zinc-600 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:text-zinc-200"
+              }`}
+            >
+              <BadgeCheck className="h-3 w-3" />
+              No Fee
             </button>
           </div>
         </div>
@@ -390,10 +416,22 @@ export default function Home() {
         </>
       )}
 
-      {/* Telegram Banner — prevent scroll anchoring */}
-      <div style={{ overflowAnchor: "none" }}>
-        <TelegramBanner />
-      </div>
+
+      {/* Footer */}
+      <footer className="mt-12 border-t border-zinc-200 py-6 dark:border-zinc-800">
+        <div className="flex items-center justify-between text-xs text-zinc-400 dark:text-zinc-600">
+          <span>Dealround &mdash; Project by Auri</span>
+          <a
+            href="https://www.linkedin.com/in/auribaci/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md px-2 py-1 text-emerald-500 transition-colors hover:bg-emerald-500 hover:text-white"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 504.4 504.4" fill="currentColor"><path d="M377.6,0.2H126.4C56.8,0.2,0,57,0,126.6v251.6c0,69.2,56.8,126,126.4,126H378c69.6,0,126.4-56.8,126.4-126.4V126.6C504,57,447.2,0.2,377.6,0.2z M168,408.2H96v-208h72V408.2z M131.6,168.2c-20.4,0-36.8-16.4-36.8-36.8c0-20.4,16.4-36.8,36.8-36.8c20.4,0,36.8,16.4,36.8,36.8C168,151.8,151.6,168.2,131.6,168.2z M408.4,408.2H408h-60V307.4c0-24.4-3.2-55.6-36.4-55.6c-34,0-39.6,26.4-39.6,54v102.4h-60v-208h56v28h1.6c8.8-16,29.2-28.4,61.2-28.4c66,0,77.6,38,77.6,94.4V408.2z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </footer>
 
       {/* Back to top */}
       <BackToTop />

@@ -18,44 +18,36 @@ import type { Deal } from "@/lib/types";
 
 export const categoryConfig = {
   activity: {
+    bg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    hoverBorder: "group-hover:border-emerald-500/40",
     gradient: "from-emerald-600 to-emerald-400",
-    bg: "bg-emerald-500/10 text-emerald-400",
+    glow: "16, 185, 129",
     icon: Dumbbell,
     label: "Activity",
-    glowInner: "16, 185, 129",   // emerald
-    glowOuter: "52, 211, 153",   // emerald lighter
-    borderA: "16, 185, 129",
-    borderB: "52, 211, 153",
   },
   food: {
+    bg: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+    hoverBorder: "group-hover:border-orange-500/40",
     gradient: "from-orange-600 to-amber-400",
-    bg: "bg-orange-500/10 text-orange-400",
+    glow: "234, 138, 30",
     icon: UtensilsCrossed,
     label: "Food",
-    glowInner: "234, 138, 30",   // orange
-    glowOuter: "245, 184, 60",   // amber
-    borderA: "234, 138, 30",
-    borderB: "245, 184, 60",
   },
   drinks: {
+    bg: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+    hoverBorder: "group-hover:border-cyan-500/40",
     gradient: "from-cyan-600 to-teal-400",
-    bg: "bg-cyan-500/10 text-cyan-400",
+    glow: "6, 182, 212",
     icon: Beer,
     label: "Drinks",
-    glowInner: "6, 182, 212",    // cyan
-    glowOuter: "20, 184, 166",   // teal
-    borderA: "6, 182, 212",
-    borderB: "20, 184, 166",
   },
   entertainment: {
+    bg: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+    hoverBorder: "group-hover:border-purple-500/40",
     gradient: "from-purple-600 to-violet-400",
-    bg: "bg-purple-500/10 text-purple-400",
+    glow: "147, 51, 234",
     icon: Clapperboard,
     label: "Entertainment",
-    glowInner: "147, 51, 234",   // purple
-    glowOuter: "167, 100, 247",  // violet
-    borderA: "147, 51, 234",
-    borderB: "167, 100, 247",
   },
 } as const;
 
@@ -74,7 +66,6 @@ export function getExpiryInfo(expiry: string | null) {
 }
 
 async function saveAsImage(el: HTMLElement, title: string) {
-  // Swap cross-origin images to proxied same-origin versions
   const images = el.querySelectorAll<HTMLImageElement>("img");
   const originalSrcs = new Map<HTMLImageElement, string>();
 
@@ -98,12 +89,11 @@ async function saveAsImage(el: HTMLElement, title: string) {
 
   try {
     const canvas = await html2canvas(el, {
-      backgroundColor: "#09090b",
+      backgroundColor: "#18181b",
       scale: 2,
       logging: false,
       useCORS: true,
       ignoreElements: (element) =>
-        element.classList?.contains("holo-shimmer") ||
         element.getAttribute("data-export-hide") === "true",
     });
 
@@ -114,7 +104,6 @@ async function saveAsImage(el: HTMLElement, title: string) {
   } catch (err) {
     console.error("Failed to save image:", err);
   } finally {
-    // Restore original srcs
     originalSrcs.forEach((src, img) => {
       URL.revokeObjectURL(img.src);
       img.src = src;
@@ -122,9 +111,16 @@ async function saveAsImage(el: HTMLElement, title: string) {
   }
 }
 
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  const month = d.toLocaleDateString("en-US", { month: "short" });
+  const date = d.getDate();
+  return { month, date };
+}
+
 export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const holoRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
   const config = categoryConfig[deal.category] ?? categoryConfig.activity;
   const Icon = config.icon;
   const expiry = getExpiryInfo(deal.expiry);
@@ -141,61 +137,36 @@ export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     const card = cardRef.current;
-    const holo = holoRef.current;
-    if (!card || !holo) return;
+    const glow = glowRef.current;
+    if (!card || !glow) return;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    holo.style.setProperty("--holo-x", `${x}px`);
-    holo.style.setProperty("--holo-y", `${y}px`);
-    holo.style.opacity = "1";
-  }, []);
+    glow.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(${config.glow}, 0.15), rgba(${config.glow}, 0.05) 40%, transparent 70%)`;
+    glow.style.opacity = "1";
+  }, [config.glow]);
 
   const handleMouseLeave = useCallback(() => {
-    if (holoRef.current) holoRef.current.style.opacity = "0";
+    if (glowRef.current) glowRef.current.style.opacity = "0";
   }, []);
+
+  const dateInfo = deal.created_at ? formatDate(deal.created_at) : null;
 
   return (
     <div className="group relative" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
       <a href={deal.url} target="_blank" rel="noopener noreferrer" className="block">
         <div
           ref={cardRef}
-          className="holo-card relative overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-lg backdrop-blur-xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-zinc-300/50 dark:border-white/[0.08] dark:bg-zinc-900/70 dark:hover:shadow-zinc-900/50"
-          style={{
-            "--glow-inner": config.glowInner,
-            "--glow-outer": config.glowOuter,
-            "--border-a": config.borderA,
-            "--border-b": config.borderB,
-          } as React.CSSProperties}
+          className={`relative overflow-hidden rounded-2xl border border-zinc-200 bg-white transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 ${config.hoverBorder}`}
         >
-          {/* Cursor-following holographic overlay */}
-          <div ref={holoRef} className="holo-shimmer" />
-          {/* Top gradient accent bar */}
-          <div className={`relative z-[2] h-1.5 bg-gradient-to-r ${config.gradient}`} />
+          {/* Cursor-following category glow */}
+          <div
+            ref={glowRef}
+            className="pointer-events-none absolute inset-0 z-[1] rounded-2xl opacity-0 transition-opacity duration-300"
+          />
 
-          {/* Deal image or category fallback */}
-          <div className="relative z-[2] h-64 w-full overflow-hidden">
-            {deal.image_url ? (
-              <>
-                <img
-                  src={deal.image_url}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent dark:from-zinc-900 dark:via-zinc-900/40" />
-              </>
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-zinc-200 dark:bg-zinc-800/80">
-                <span
-                  className="text-5xl italic tracking-wide"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif", color: "#c9a84c" }}
-                >
-                  {config.label}
-                </span>
-              </div>
-            )}
-          </div>
+          {/* Top accent bar */}
+          <div className={`h-1 bg-gradient-to-r ${config.gradient}`} />
 
           {/* Sold-out overlay */}
           {!!deal.sold_out && (
@@ -206,131 +177,134 @@ export function DealCard({ deal, distanceKm }: { deal: Deal; distanceKm?: number
             </div>
           )}
 
-          {/* Discount badge */}
-          {deal.discount_pct != null && deal.discount_pct > 0 && (
-            <div className="absolute right-3 top-5 z-[3] rounded-lg bg-red-500 px-2.5 py-1 text-sm font-black text-white shadow-lg">
-              -{deal.discount_pct}%
-            </div>
-          )}
-
-          <div className="relative z-[2] p-6">
-            {/* Category badge + expiry */}
-            <div className="mb-4 flex items-center justify-between">
+          <div className="relative z-[2] p-5">
+            {/* Header: Category + Date/Expiry */}
+            <div className="mb-4 flex items-start justify-between">
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full border border-zinc-200 px-3 py-1 text-xs font-semibold backdrop-blur-sm dark:border-white/[0.08] ${config.bg}`}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${config.bg}`}
               >
                 <Icon className="h-3.5 w-3.5" />
                 {config.label}
               </span>
-              {expiry && (
-                <span
-                  className={`inline-flex items-center gap-1 text-xs font-semibold ${
-                    expiry.urgent
-                      ? "text-red-400 animate-pulse"
-                      : "text-amber-400"
-                  }`}
-                >
-                  <Clock className="h-3.5 w-3.5" />
-                  {expiry.text}
-                </span>
+              <div className="text-right">
+                {dateInfo && (
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                    Added {dateInfo.month} {dateInfo.date}
+                  </span>
+                )}
+                {expiry && (
+                  <p className={`mt-0.5 text-xs font-medium ${
+                    expiry.urgent ? "text-red-500" : "text-amber-500"
+                  }`}>
+                    <Clock className="mr-1 inline h-3 w-3" />
+                    {expiry.text}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Image */}
+            <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl">
+              {deal.image_url ? (
+                <img
+                  src={deal.image_url}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                  <Icon className="h-12 w-12 text-zinc-300 dark:text-zinc-600" />
+                </div>
+              )}
+              {/* Discount badge */}
+              {deal.discount_pct != null && deal.discount_pct > 0 && (
+                <div className="absolute left-3 top-3 rounded-lg bg-red-500 px-2 py-0.5 text-xs font-bold text-white shadow">
+                  -{deal.discount_pct}%
+                </div>
               )}
             </div>
 
             {/* Title */}
-            <h3 className="mb-4 text-lg font-bold leading-snug text-zinc-900 line-clamp-2 group-hover:text-black dark:text-zinc-100 dark:group-hover:text-white">
+            <h3 className="mb-3 text-base font-bold leading-snug text-zinc-900 line-clamp-2 dark:text-white">
               {deal.title}
             </h3>
 
             {/* Info rows */}
-            <div className="mb-4 space-y-2">
-              {/* Provider / venue */}
-              {deal.provider && (
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
-                  <Store className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
-                  <span className="truncate">{deal.provider}</span>
-                </div>
-              )}
-
-              {/* Location */}
+            <div className="mb-4 space-y-1.5">
               {deal.location && (
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500" />
+                <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
                   <span className="truncate">{deal.location}</span>
                   {distanceKm != null && (
-                    <span className="shrink-0 rounded-full border border-sky-500/20 bg-sky-500/10 px-2 py-0.5 text-xs font-semibold text-sky-600 dark:text-sky-400">
+                    <span className="shrink-0 rounded-full bg-sky-500/10 px-2 py-0.5 text-xs font-semibold text-sky-600 dark:text-sky-400">
                       {distanceKm.toFixed(1)} km
                     </span>
                   )}
                 </div>
               )}
-
+              {deal.provider && (
+                <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  <Store className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{deal.provider}</span>
+                </div>
+              )}
             </div>
 
-            {/* Price block */}
-            <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 backdrop-blur-sm dark:border-white/[0.06] dark:bg-white/[0.04]">
-              <div className="flex items-end justify-between">
-                <div>
-                  {deal.deal_price != null ? (
-                    <div className="flex items-baseline gap-3">
-                      <span className="text-3xl font-black text-zinc-900 dark:text-white">
-                        {Math.round(deal.deal_price)}
-                        <span className="ml-1 text-lg font-semibold text-zinc-500 dark:text-zinc-400">
-                          kr.
-                        </span>
-                      </span>
-                      {deal.original_price != null && (
-                        <span className="text-base text-zinc-400 line-through dark:text-zinc-500">
-                          {Math.round(deal.original_price)} kr.
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-lg font-semibold text-zinc-500 dark:text-zinc-400">
-                      See price on site
+            {/* Price row */}
+            <div className="flex items-end justify-between">
+              <div>
+                {deal.deal_price != null ? (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-black text-zinc-900 dark:text-white">
+                      {Math.round(deal.deal_price)}
+                      <span className="ml-0.5 text-sm font-semibold text-zinc-400">kr.</span>
                     </span>
-                  )}
-                  {deal.deal_price != null && deal.fee != null && deal.fee > 0 && (
-                    <div className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
-                      + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} kr. gebyr = {Math.round(deal.deal_price + deal.fee)} kr. total
-                    </div>
-                  )}
-                </div>
-                {savings != null && savings > 0 && (
-                  <span className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-sm font-bold text-emerald-400 backdrop-blur-sm">
-                    Save {savings} kr.
+                    {deal.original_price != null && (
+                      <span className="text-sm text-zinc-400 line-through dark:text-zinc-500">
+                        {Math.round(deal.original_price)} kr.
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-sm font-medium text-zinc-400">
+                    See price on site
                   </span>
                 )}
+                {deal.deal_price != null && deal.fee != null && deal.fee > 0 && (
+                  <div className="text-[11px] text-zinc-400 dark:text-zinc-500">
+                    + {deal.fee % 1 === 0 ? deal.fee : deal.fee.toFixed(2)} kr. fee
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Source + added date */}
-            <div className="mt-3 flex items-center justify-between text-xs text-zinc-400 dark:text-zinc-600">
-              <span>via {deal.source}</span>
-              {deal.created_at && (
-                <span>
-                  {new Date(deal.created_at).toLocaleDateString("en-DK", { month: "short", day: "numeric" })}
+              {savings != null && savings > 0 && (
+                <span className="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  Save {savings} kr.
                 </span>
               )}
             </div>
           </div>
 
-          {/* Perforated edge */}
-          <div className="voucher-edge relative z-[2]" />
-
-          {/* Footer — hidden from image export */}
-          <div data-export-hide="true" className="relative z-[2] flex items-center justify-between px-5 py-2.5">
-            <span className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium uppercase tracking-wider text-zinc-400 transition-colors group-hover:bg-zinc-100 group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:bg-zinc-800 dark:group-hover:text-zinc-300">
-              View deal
-              <ExternalLink className="h-3.5 w-3.5" />
-            </span>
-            <button
-              onClick={handleSave}
-              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
-              title="Save as image"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Save
-            </button>
+          {/* Footer */}
+          <div className="border-t border-zinc-100 dark:border-zinc-800">
+            <div data-export-hide="true" className="flex items-center justify-between px-5 py-3">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 transition-colors group-hover:text-emerald-500 dark:text-emerald-400 dark:group-hover:text-emerald-300">
+                View deal
+                <ExternalLink className="h-3.5 w-3.5" />
+              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] text-zinc-400 dark:text-zinc-600">
+                  via {deal.source}
+                </span>
+                <button
+                  onClick={handleSave}
+                  className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                  title="Save as image"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </a>

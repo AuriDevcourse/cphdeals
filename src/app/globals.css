@@ -120,93 +120,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-y: scroll;
+  }
   body {
     @apply bg-background text-foreground;
   }
 }
-
-/* Voucher perforated edge */
-.voucher-edge {
-  background-image: radial-gradient(
-    circle,
-    oklch(0.97 0 0) 5px,
-    transparent 5px
-  );
-  background-size: 18px 18px;
-  background-position: 9px -9px;
-  height: 18px;
-}
-
-.dark .voucher-edge {
-  background-image: radial-gradient(
-    circle,
-    oklch(0.15 0 0) 5px,
-    transparent 5px
-  );
-}
-
-/* Category glow — follows cursor */
-.holo-card {
-  position: relative;
-}
-
-.holo-shimmer {
-  --holo-x: 50%;
-  --holo-y: 50%;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  background:
-    radial-gradient(
-      600px circle at var(--holo-x) var(--holo-y),
-      rgba(var(--glow-inner), 0.20),
-      rgba(var(--glow-outer), 0.12) 30%,
-      transparent 70%
-    );
-}
-
-/* Border glow — category colored, only active on hover */
-.holo-card::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  z-index: 0;
-  border-radius: inherit;
-  opacity: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--border-a), 0.5),
-    rgba(var(--border-b), 0.4),
-    rgba(var(--border-a), 0.2),
-    rgba(var(--border-b), 0.4),
-    rgba(var(--border-a), 0.5)
-  );
-  background-size: 300% 300%;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 1px;
-}
-
-.group:hover .holo-card::after {
-  opacity: 1;
-  animation: holo-border 4s ease infinite;
-  transition: opacity 0.5s ease;
-}
-
-@keyframes holo-border {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
 
 /* ===== Leaflet map theme ===== */
 

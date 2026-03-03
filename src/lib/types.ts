@@ -27,4 +27,5 @@ export interface StatsResponse {
   total: number;
   by_category: Record<string, number>;
   last_scan: string | null;
+  new_today: number;
 }

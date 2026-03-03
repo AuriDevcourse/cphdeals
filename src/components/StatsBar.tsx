@@ -19,6 +19,11 @@ export function StatsBar() {
       <span>
         <strong className="text-zinc-600 dark:text-zinc-300">{data.total}</strong> deals
       </span>
+      {data.new_today > 0 && (
+        <span className="text-emerald-600 dark:text-emerald-400">
+          +{data.new_today} new today
+        </span>
+      )}
       {data.by_category.activity && (
         <span>{data.by_category.activity} activities</span>
       )}

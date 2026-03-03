@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Agentation } from "agentation";
 
 import "./globals.css";
 
@@ -68,7 +69,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-sans antialiased bg-zinc-50 dark:bg-zinc-950`}
       >
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 h-64 bg-gradient-to-b from-emerald-500/15 via-emerald-500/5 to-transparent dark:from-emerald-500/10 dark:via-emerald-500/3" />
         <QueryProvider>{children}</QueryProvider>
+        {process.env.NODE_ENV === "development" && <Agentation />}
         <Analytics />
         <SpeedInsights />
       </body>
